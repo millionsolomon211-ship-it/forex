@@ -28,6 +28,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
+        // Must have verified email unless they are ADMIN (or we can enforce it strictly later)
+        // if (!user.emailVerified) {
+        //   throw new Error("Please verify your email first.");
+        // }
+
         return {
           id: user._id.toString(),
           name: user.name,
@@ -57,7 +62,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }
   },
   pages: {
-    signIn: '/login', // We will build a brutalist login page
+    signIn: '/auth/login', 
   },
   session: {
     strategy: "jwt"
