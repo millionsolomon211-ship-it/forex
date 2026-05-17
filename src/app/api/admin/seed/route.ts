@@ -31,7 +31,7 @@ export async function GET() {
         name: 'Commercial Bank of Ethiopia',
         email: providerEmail,
         password: providerPassword,
-        role: 'PROVIDER',
+        role: 'BANK',
         companyName: 'CBE',
         registrationNumber: 'CBE-001',
         isAuthorized: true, // Auto-authorize for testing

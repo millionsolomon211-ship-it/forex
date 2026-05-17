@@ -4,7 +4,7 @@ import User from '@/models/User';
 import VerificationToken from '@/models/VerificationToken';
 
 function generateToken() {
-  return Math.random().toString(36).substr(2) + Math.random().toString(36).substr(2);
+  return Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
 }
 
 export async function POST(request: Request) {
