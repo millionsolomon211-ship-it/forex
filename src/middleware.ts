@@ -1,30 +1,29 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { auth } from './auth';
 
 export async function middleware(request: NextRequest) {
-  const session = await auth();
   const path = request.nextUrl.pathname;
 
-  // Protect dashboard routes
+  // Don't run auth logic in Edge runtime - just basic routing
+  // Auth checks should be done in route handlers or server components
+  
+  // Only protect dashboard routes with a simple check
   if (path.startsWith('/dashboard')) {
-    if (!session) {
-      return NextResponse.redirect(new URL('/auth/login', request.url));
-    }
-
-    const role = session.user?.role;
+    // Get token from cookies (NextAuth JWT)
+    const token = request.cookies.get('next-auth.session-token')?.value || 
+                  request.cookies.get('__Secure-next-auth.session-token')?.value;
     
-    // Role-based routing enforcements inside /dashboard
-    if (path === '/dashboard') {
-      if (role === 'ADMIN') return NextResponse.redirect(new URL('/dashboard/admin', request.url));
-      if (role === 'BANK' || role === 'PRIVATE') return NextResponse.redirect(new URL('/dashboard/provider', request.url));
-      return NextResponse.redirect(new URL('/dashboard/user', request.url));
+    if (!token) {
+      return NextResponse.redirect(new URL('/auth/login', request.url));
     }
   }
 
-  // If visiting root, redirect to login if no session, or dashboard if session exists
+  // If visiting root, check for session token
   if (path === '/') {
-    if (!session) {
+    const token = request.cookies.get('next-auth.session-token')?.value || 
+                  request.cookies.get('__Secure-next-auth.session-token')?.value;
+    
+    if (!token) {
       return NextResponse.redirect(new URL('/auth/login', request.url));
     } else {
       return NextResponse.redirect(new URL('/dashboard', request.url));
@@ -32,8 +31,13 @@ export async function middleware(request: NextRequest) {
   }
 
   // Prevent logged in users from seeing auth pages
-  if (path.startsWith('/auth') && session) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+  if (path.startsWith('/auth')) {
+    const token = request.cookies.get('next-auth.session-token')?.value || 
+                  request.cookies.get('__Secure-next-auth.session-token')?.value;
+    
+    if (token) {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
   }
 
   return NextResponse.next();

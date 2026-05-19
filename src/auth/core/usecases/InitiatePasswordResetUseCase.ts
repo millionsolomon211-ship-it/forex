@@ -2,7 +2,7 @@ import { UserRepository } from '@/auth/ports/UserRepository';
 import { TokenService } from '@/auth/ports/TokenService';
 import { VerificationTokenRepository } from '@/auth/ports/VerificationTokenRepository';
 import { EmailService } from '@/auth/ports/EmailService';
-import { ValidationError } from '@/auth/core/domain/errors';
+import { ValidationError } from '@/auth/core/domain/errors/ValidationError';
 import { VerificationToken } from '@/auth/core/domain/VerificationToken';
 
 export interface InitiatePasswordResetInput {

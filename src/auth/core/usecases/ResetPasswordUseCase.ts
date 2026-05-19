@@ -1,7 +1,8 @@
 import { UserRepository } from '@/auth/ports/UserRepository';
 import { PasswordHasher } from '@/auth/ports/PasswordHasher';
 import { VerificationTokenRepository } from '@/auth/ports/VerificationTokenRepository';
-import { ValidationError, NotFoundError } from '@/auth/core/domain/errors';
+import { ValidationError } from '@/auth/core/domain/errors/ValidationError';
+import { NotFoundError } from '@/auth/core/domain/errors/NotFoundError';
 
 export interface ResetPasswordInput {
   email: string;

@@ -1,6 +1,7 @@
 import { UserRepository } from '@/auth/ports/UserRepository';
 import { PasswordHasher } from '@/auth/ports/PasswordHasher';
-import { ValidationError, AuthenticationError } from '@/auth/core/domain/errors';
+import { ValidationError } from '@/auth/core/domain/errors/ValidationError';
+import { AuthenticationError } from '@/auth/core/domain/errors/AuthenticationError';
 import { User, UserEntity } from '@/auth/core/domain/User';
 
 export interface AuthenticateUserInput {

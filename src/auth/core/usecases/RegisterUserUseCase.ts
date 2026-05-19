@@ -3,7 +3,7 @@ import { PasswordHasher } from '@/auth/ports/PasswordHasher';
 import { TokenService } from '@/auth/ports/TokenService';
 import { VerificationTokenRepository } from '@/auth/ports/VerificationTokenRepository';
 import { EmailService } from '@/auth/ports/EmailService';
-import { ValidationError } from '@/auth/core/domain/errors';
+import { ValidationError } from '@/auth/core/domain/errors/ValidationError';
 import { User, UserEntity } from '@/auth/core/domain/User';
 import { VerificationToken } from '@/auth/core/domain/VerificationToken';
 

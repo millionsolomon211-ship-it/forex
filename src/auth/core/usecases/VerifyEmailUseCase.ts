@@ -1,6 +1,7 @@
 import { VerificationTokenRepository } from '@/auth/ports/VerificationTokenRepository';
 import { UserRepository } from '@/auth/ports/UserRepository';
-import { ValidationError, NotFoundError } from '@/auth/core/domain/errors';
+import { ValidationError } from '@/auth/core/domain/errors/ValidationError';
+import { NotFoundError } from '@/auth/core/domain/errors/NotFoundError';
 
 export interface VerifyEmailInput {
   email: string;
