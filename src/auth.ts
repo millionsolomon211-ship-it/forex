@@ -1,8 +1,7 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
-import bcrypt from "bcryptjs"
-import dbConnect from "@/lib/db"
-import User from "@/models/User"
+import { authContainer } from "@/auth/container"
+import { AuthenticationError } from "@/auth/core/domain/errors"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -16,30 +15,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
-        await dbConnect();
-        
-        const user = await User.findOne({ email: credentials.email });
-        if (!user) {
+
+        try {
+          const result = await authContainer.authenticateUserUseCase.execute({
+            email: credentials.email,
+            password: credentials.password as string
+          });
+
+          return {
+            id: result.id,
+            name: result.name,
+            email: result.email,
+            role: result.role,
+            isAuthorized: result.isAuthorized
+          };
+        } catch (error) {
+          if (error instanceof AuthenticationError) {
+            return null;
+          }
+          console.error('Authentication error:', error);
           return null;
         }
-
-        const isPasswordValid = await bcrypt.compare(credentials.password as string, user.password);
-        if (!isPasswordValid) {
-          return null;
-        }
-
-        // Must have verified email unless they are ADMIN (or we can enforce it strictly later)
-        // if (!user.emailVerified) {
-        //   throw new Error("Please verify your email first.");
-        // }
-
-        return {
-          id: user._id.toString(),
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          isAuthorized: user.isAuthorized
-        };
       }
     })
   ],
@@ -68,3 +64,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: "jwt"
   }
 })
+   
